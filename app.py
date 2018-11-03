@@ -19,20 +19,6 @@ class MainHandler(BaseHandler):
         self.render("templates/html/main.html")
 
 
-class WebSocketHandler(tornado.websocket.WebSocketHandler):
-    def open(self):
-        print("Opened Socket")
-    def on_message(self,message):
-        print(message)
-        to_search = message.replace(" ","+")
-        goog_search = "https://www.google.co.uk/search?sclient=psy-ab&client=ubuntu&hs=k5b&channel=fs&biw=1366&bih=648&noj=1&q=" + to_search
-        r = requests.get(goog_search)
-        soup = BeautifulSoup(r.text, "html.parser")
-        first_link = soup.find('cite').text
-        self.write_message("First Google Result Was: " + first_link)
-    def on_close(self):
-        print("Closed Socket")
-
 
 
 
