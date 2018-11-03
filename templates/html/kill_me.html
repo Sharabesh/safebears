@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
-<head>
+  <head>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,75 +18,6 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="static/js/bootstrap.min.js"></script>
 
-{#    Google Mapping Library#}
-{#    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBW_4CFPF1EnAUoksk5Pwq1hex0cYLDqqk&libraries=visualization"></script>#}
-    <!-- Custom CSS -->
-    <style>
-    body {
-        padding-top: 70px;
-        /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
-    }
-    </style>		
-</head>
-
-
-<body>
-<!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="./">Home</a>
-                
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a style="font-weight: bold;" href="#!">IDK1</a>
-                    </li>
-                    <li>
-                        <a style="font-weight:bold;" href="#">IDK2</a>
-                    </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container -->
-    </nav>
-
-    <!-- Search Functionality  -->
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 text-center">
-                <h1>IDK3</h1>
-                <p class="lead">Request Management</p>
-                <div class="input-group">
-                   <input id='client-text' type="text" name="q" style="width:100%" placeholder="This does nothing!" class="form-control">
-                   <span class="input-group-btn">
-                        <input type="submit" class="btn btn-default" id='issue-socket' value="Submit" />
-                   </span>
-                </div>
-            </div>
-        </div>
-        <!-- /.row -->
-    </div>
-    <!-- /.container -->
-    <div class="container">
-        <div id="holder" class="alert alert-success" style="display: none; padding-top: 20px; margin-top:20px;">
-        </div>
-    </div>
-
-
-<!DOCTYPE html>
-<html>
-  <head>
     <meta charset="utf-8">
     <title>Heatmaps</title>
     <style>
@@ -125,11 +57,119 @@
     </style>
   </head>
 
+  <body>
+  <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="./">Home</a>
+
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a style="font-weight: bold;" href="#!">IDK1</a>
+                    </li>
+                    <li>
+                        <a style="font-weight:bold;" href="#">IDK2</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Search Functionality  -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h1>IDK3</h1>
+                <p class="lead">Maggie said come up with an actual name</p>
+                <div class="input-group">
+                   <input id='client-text' type="text" name="q" style="width:100%" placeholder="This does nothing!" class="form-control">
+                   <span class="input-group-btn">
+                        <input type="submit" class="btn btn-default" id='issue-socket' value="Submit" />
+                   </span>
+                </div>
+            </div>
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container -->
+    <div class="container">
+        <div id="holder" class="alert alert-success" style="display: none; padding-top: 20px; margin-top:20px;">
+        </div>
+    </div>
 
 
+    <div id="floating-panel">
+      <button onclick="toggleHeatmap()">Toggle Heatmap</button>
+      <button onclick="changeGradient()">Change gradient</button>
+      <button onclick="changeRadius()">Change radius</button>
+      <button onclick="changeOpacity()">Change opacity</button>
+    </div>
+    <div id="map"></div>
+    <script>
 
+      // This example requires the Visualization library. Include the libraries=visualization
+      // parameter when you first load the API. For example:
+      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=visualization">
 
-<script>
+      var map, heatmap;
+
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 13,
+          center: {lat: 37.775, lng: -122.434},
+          mapTypeId: 'satellite'
+        });
+
+        heatmap = new google.maps.visualization.HeatmapLayer({
+          data: getPoints(),
+          map: map
+        });
+      }
+
+      function toggleHeatmap() {
+        heatmap.setMap(heatmap.getMap() ? null : map);
+      }
+
+      function changeGradient() {
+        var gradient = [
+          'rgba(0, 255, 255, 0)',
+          'rgba(0, 255, 255, 1)',
+          'rgba(0, 191, 255, 1)',
+          'rgba(0, 127, 255, 1)',
+          'rgba(0, 63, 255, 1)',
+          'rgba(0, 0, 255, 1)',
+          'rgba(0, 0, 223, 1)',
+          'rgba(0, 0, 191, 1)',
+          'rgba(0, 0, 159, 1)',
+          'rgba(0, 0, 127, 1)',
+          'rgba(63, 0, 91, 1)',
+          'rgba(127, 0, 63, 1)',
+          'rgba(191, 0, 31, 1)',
+          'rgba(255, 0, 0, 1)'
+        ];
+        heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
+      }
+
+      function changeRadius() {
+        heatmap.set('radius', heatmap.get('radius') ? null : 20);
+      }
+
+      function changeOpacity() {
+        heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
+      }
 
 const coords = [
     [37.8721979, -122.2605057],
@@ -176,7 +216,7 @@ const coords = [
 
 
 
-    function getPoints(coords = coords) {
+    function getPoints() {
     // Define the LatLng coordinates for the polygon's path.
         let triangleCoords = [];
         for (let i = 0; i < coords.length; i++) {
@@ -187,24 +227,11 @@ const coords = [
         return triangleCoords;
     }
 
-    function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 13,
-            center: {lat: 37.8709293, lng: -122.2544609},
-            mapTypeId: 'satellite'
-        });
-
-        heatmap = new google.maps.visualization.HeatmapLayer({
-            data: drawPoints(coords),
-            map: map
-        });
-    }
 
 
-</script>
-
-<script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBW_4CFPF1EnAUoksk5Pwq1hex0cYLDqqk&libraries=visualization&callback=initMap">
-</script>
-
-
+    </script>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBW_4CFPF1EnAUoksk5Pwq1hex0cYLDqqk&libraries=visualization&callback=initMap">
+    </script>
+  </body>
+</html>

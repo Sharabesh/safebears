@@ -5,6 +5,9 @@ import tornado.web
 import tornado.httpclient
 import tornado.websocket
 import os
+import pandas as pd  # In memory datastore
+
+
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
@@ -16,8 +19,9 @@ class MainHandler(BaseHandler):
     def get(self):
         self.render("templates/html/main.html")
 
-
-
+class TrialHandler(BaseHandler):
+    def get(self):
+        self.render("templates/html/kill_me.html")
 
 
 settings = {
@@ -33,6 +37,7 @@ def make_app():
             "path":os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
         }),
         (r"/",MainHandler),
+        (r"/trial", TrialHandler),
 
     ], debug=True,compress_response=True, **settings)
 
