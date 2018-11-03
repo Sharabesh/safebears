@@ -5,8 +5,6 @@ import tornado.web
 import tornado.httpclient
 import tornado.websocket
 import os
-import requests
-from socket import *
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
@@ -35,7 +33,6 @@ def make_app():
             "path":os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
         }),
         (r"/",MainHandler),
-        (r"/websocket",WebSocketHandler)
 
     ], debug=True,compress_response=True, **settings)
 
