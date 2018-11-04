@@ -2,6 +2,7 @@
 
 import googlemaps
 from datetime import datetime
+from datetime import timedelta
 
 import requests
 import json
@@ -9,7 +10,7 @@ import json
 gmaps = googlemaps.Client(key='AIzaSyBW_4CFPF1EnAUoksk5Pwq1hex0cYLDqqk')
 
 
-def get_routes(source, destination, mode="walking", departure=datetime.now()):
+def get_routes(source, destination, mode="walking", departure=datetime.now() + timedelta(days=1)):
     """
     :param source: string, source
     :param destination: string, destination

@@ -41,7 +41,8 @@ class CrimeHandler(BaseHandler):
 
         self.write(json.dumps({
             'heatmap': combined,
-            'path': best
+            'path': best,
+            'rest': rest,
         }))
 
 
@@ -94,16 +95,10 @@ def compute_heuristic(route):
 
 
 def compute_best_route(routes):
-    min_key = max(routes, key = lambda x: compute_heuristic(routes[x]))
+    min_key = min(routes, key = lambda x: compute_heuristic(routes[x]))
     best = routes[min_key]
-    del routes[best]
-    return (best, routes)
-
-
-
-
-
-
+    del routes[min_key]
+    return (best, list(routes.values()))
 
 
 
