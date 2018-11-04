@@ -24,6 +24,12 @@ class BaseHandler(tornado.web.RequestHandler):
     def get(self):
         self.set_header("Content-Type", "application/json")
 
+    def set_default_headers(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+
+
 class MainHandler(BaseHandler):
     def get(self):
         self.render("templates/html/main.html")
@@ -35,8 +41,12 @@ class TrialHandler(BaseHandler):
 
 class CrimeHandler(BaseHandler):
     def get(self):
-        addr1 = "2525 college avenue, Berkeley, CA"
-        addr2 = "UC Berkeley"
+        addr1 = self.get_argument("addr1", "2110 Haste Street")
+        addr2 = self.get_argument("addr2", "Stanford University")
+        if not addr1 or not addr2:
+            addr1 = "2110 Haste Street"
+            addr2 = "Stanford University"
+
         best, rest = compute_best_route(get_routes(addr1, addr2))
 
         self.write(json.dumps({
