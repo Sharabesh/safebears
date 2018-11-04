@@ -16,7 +16,7 @@ from math import sqrt
 data = pd.read_csv("data/crime_clean.csv")
 latitides = list(data['Latitude'])
 longitudes = list(data['Longitude'])
-combined = np.array(list(zip(latitides, longitudes)))
+combined = list(zip(latitides, longitudes))
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
@@ -55,7 +55,7 @@ def dist(coord1, coord2):
 
 
 def compute_heuristic(route):
-    unique, counts, centers = compute_centroids(combined)
+    unique, counts, centers = compute_centroids(np.array(combined))
 
     total_val = 0
     for curr_coord in route:
