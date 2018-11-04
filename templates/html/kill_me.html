@@ -61,7 +61,7 @@
   </head>
 
   <body>
-    <h1 style="text-align: center">Safe Bears :(</h1>
+    <h1 style="text-align: center">Safe Bears</h1>
     <div id="bens_stuff"></div>
 
     <div id="map"></div>
@@ -104,9 +104,9 @@
         var map, heatmap;
 
         map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 14,
-            center: {lat: 37.8741363, lng: -122.2571693},
-            mapTypeId: 'satellite'
+            zoom: 15.5,
+            center: {lat: (getPathCoords(vals['path'])[0].lat + getPathCoords(vals['path'])[getPathCoords(vals['path']).length-1].lat)/2,
+                        lng:(getPathCoords(vals['path'])[0].lng + getPathCoords(vals['path'])[getPathCoords(vals['path']).length-1].lng)/2},
         });
 
         heatmap = new google.maps.visualization.HeatmapLayer({
@@ -118,8 +118,8 @@
           path: getPathCoords(vals['path']),
           geodesic: true,
           strokeColor: '#1f85b0',
-          strokeOpacity: 1.0,
-          strokeWeight: 5
+          strokeOpacity: 1,
+          strokeWeight: 5.5
         });
 
         flightPath.setMap(map);
@@ -131,8 +131,8 @@
               path: getPathCoords(vals['rest'][i]),
               geodesic: true,
               strokeColor: '#db2828',
-              strokeOpacity: 1.0,
-              strokeWeight: 3
+              strokeOpacity: 1,
+              strokeWeight: 4
             });
             flightPath.setMap(map);
         }
