@@ -7,11 +7,16 @@ import tornado.websocket
 import os
 import pandas as pd  # In memory datastore
 import json
+from decode import get_routes
+from sklearn.cluster import KMeans
+import numpy as np
+from math import sqrt
 
+# For now store the data as a globally accessible field
 data = pd.read_csv("data/crime_clean.csv")
 latitides = list(data['Latitude'])
 longitudes = list(data['Longitude'])
-combined = list(zip(latitides, longitudes))
+combined = np.array(list(zip(latitides, longitudes)))
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
@@ -31,6 +36,49 @@ class TrialHandler(BaseHandler):
 class CrimeHandler(BaseHandler):
     def get(self):
         self.write(json.dumps(combined))
+
+
+def compute_centroids(coords):
+    # Coords has to be an np.array object
+    kmeans = KMeans(n_clusters = 10).fit(coords)
+
+    unique, counts = np.unique(kmeans.labels_, return_counts = True)
+
+    centers = kmeans.cluster_centers_
+
+    return (unique, counts, centers)
+
+# Eucledean distance function for geometric coordinates
+def dist(coord1, coord2):
+    return sqrt((coord1[0] - coord2[0]) **2 + (coord1[1] - coord2[1]) **2)
+
+
+
+def compute_heuristic(route):
+    unique, counts, centers = compute_centroids(combined)
+
+    total_val = 0
+    for curr_coord in route:
+        count = 0
+        for centroid in centers:
+            # Frequency / dist(centroid)
+            try:
+                total_val += counts[count] / (dist(curr_coord, centroid))
+            except:
+                total_val += 100000 # TODO: Change to a valid heuristic estimate later
+            count += 1
+
+
+def compute_best_route(routes):
+    return min(routes, key = lambda x: compute_heuristic(routes[x]))
+
+
+
+
+
+
+
+
 
 
 settings = {
