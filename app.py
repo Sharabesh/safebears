@@ -35,7 +35,14 @@ class TrialHandler(BaseHandler):
 
 class CrimeHandler(BaseHandler):
     def get(self):
-        self.write(json.dumps(combined))
+        addr1 = "2525 college avenue, Berkeley, CA"
+        addr2 = "UC Berkeley"
+        best, rest = compute_best_route(get_routes(addr1, addr2))
+
+        self.write(json.dumps({
+            'heatmap': combined,
+            'path': best
+        }))
 
 
 class BestRouteHandler(BaseHandler):
@@ -83,10 +90,15 @@ def compute_heuristic(route):
             except:
                 total_val += 100000 # TODO: Change to a valid heuristic estimate later
             count += 1
+    return total_val
 
 
 def compute_best_route(routes):
-    return min(routes, key = lambda x: compute_heuristic(routes[x]))
+    min_key = max(routes, key = lambda x: compute_heuristic(routes[x]))
+    best = routes[min_key]
+    del routes[best]
+    return (best, routes)
+
 
 
 

@@ -17,6 +17,9 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="static/js/bootstrap.min.js"></script>
+{#    React and React DOM  #}
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
 
     <meta charset="utf-8">
     <title>Heatmaps</title>
@@ -24,13 +27,13 @@
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
       #map {
-        height: 100%;
+        height: 80%;
       }
       /* Optional: Makes the sample page fill the window. */
       html, body {
         height: 100%;
         margin: 0;
-        padding: 0;
+        padding: 2em;
       }
       #floating-panel {
         position: absolute;
@@ -58,15 +61,9 @@
   </head>
 
   <body>
+    <h1 style="text-align: center">Safe Bears :(</h1>
+    <div id="bens_stuff"></div>
 
-
-
-    <div id="floating-panel">
-      <button onclick="toggleHeatmap()">Toggle Heatmap</button>
-      <button onclick="changeGradient()">Change gradient</button>
-      <button onclick="changeRadius()">Change radius</button>
-      <button onclick="changeOpacity()">Change opacity</button>
-    </div>
     <div id="map"></div>
     <script>
 
@@ -82,70 +79,67 @@
         return triangleCoords;
     }
 
-      function initMap() {
-        $.ajax({
-             type: "GET",
-             url: "/crime"
-         }).complete(function(o) {
-            j = o.responseText;
-            console.log(j);
-            vals = JSON.parse(j);
-            console.log(vals);
-
-            var map, heatmap;
-
-            map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 16,
-                center: {lat: 37.8741363, lng: -122.2571693},
-                mapTypeId: 'satellite'
+    function getPathCoords(coords) {
+        let output = [];
+        for (let i = 0; i < coords.length; i++) {
+            output.push({
+                lat: coords[i][0],
+                lng: coords[i][1],
             });
+        }
+        return output;
 
-            heatmap = new google.maps.visualization.HeatmapLayer({
-                data: getPoints(vals),
-                map: map
-            });
+    }
+
+  function initMap() {
+    $.ajax({
+         type: "GET",
+         url: "/crime"
+     }).complete(function(o) {
+        j = o.responseText;
+        console.log(j);
+        vals = JSON.parse(j);
+        console.log(vals);
+
+        var map, heatmap;
+
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 16,
+            center: {lat: 37.8741363, lng: -122.2571693},
+            mapTypeId: 'satellite'
+        });
+
+        heatmap = new google.maps.visualization.HeatmapLayer({
+            data: getPoints(vals['heatmap']),
+            map: map
+        });
+
+        var flightPath = new google.maps.Polyline({
+          path: getPathCoords(vals['path']),
+          geodesic: true,
+          strokeColor: '#FF0000',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+
+        flightPath.setMap(map);
 
         });
-      }
-
-      function toggleHeatmap() {
-        heatmap.setMap(heatmap.getMap() ? null : map);
-      }
-
-      function changeGradient() {
-        var gradient = [
-          'rgba(0, 255, 255, 0)',
-          'rgba(0, 255, 255, 1)',
-          'rgba(0, 191, 255, 1)',
-          'rgba(0, 127, 255, 1)',
-          'rgba(0, 63, 255, 1)',
-          'rgba(0, 0, 255, 1)',
-          'rgba(0, 0, 223, 1)',
-          'rgba(0, 0, 191, 1)',
-          'rgba(0, 0, 159, 1)',
-          'rgba(0, 0, 127, 1)',
-          'rgba(63, 0, 91, 1)',
-          'rgba(127, 0, 63, 1)',
-          'rgba(191, 0, 31, 1)',
-          'rgba(255, 0, 0, 1)'
-        ];
-        heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
-      }
-
-      function changeRadius() {
-        heatmap.set('radius', heatmap.get('radius') ? null : 20);
-      }
-
-      function changeOpacity() {
-        heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
-      }
 
 
+    }
 
     </script>
 
   <script async defer
           src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBW_4CFPF1EnAUoksk5Pwq1hex0cYLDqqk&libraries=visualization&callback=initMap">
+  </script>
+
+
+  <script>
+
+
+
   </script>
 
 
