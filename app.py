@@ -6,8 +6,12 @@ import tornado.httpclient
 import tornado.websocket
 import os
 import pandas as pd  # In memory datastore
+import json
 
-
+data = pd.read_csv("data/crime_clean.csv")
+latitides = list(data['Latitude'])
+longitudes = list(data['Longitude'])
+combined = list(zip(latitides, longitudes))
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
@@ -24,6 +28,11 @@ class TrialHandler(BaseHandler):
         self.render("templates/html/kill_me.html")
 
 
+class CrimeHandler(BaseHandler):
+    def get(self):
+        self.write(json.dumps(combined))
+
+
 settings = {
     "login_url":"/login",
     "compress_reponse":True,
@@ -38,8 +47,11 @@ def make_app():
         }),
         (r"/",MainHandler),
         (r"/trial", TrialHandler),
-
+        (r"/crime", CrimeHandler),
     ], debug=True,compress_response=True, **settings)
+
+
+
 
 
 if __name__ == "__main__":

@@ -58,57 +58,7 @@
   </head>
 
   <body>
-  <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="./">Home</a>
 
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a style="font-weight: bold;" href="#!">IDK1</a>
-                    </li>
-                    <li>
-                        <a style="font-weight:bold;" href="#">IDK2</a>
-                    </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container -->
-    </nav>
-
-    <!-- Search Functionality  -->
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 text-center">
-                <h1>IDK3</h1>
-                <p class="lead">Maggie said come up with an actual name</p>
-                <div class="input-group">
-                   <input id='client-text' type="text" name="q" style="width:100%" placeholder="This does nothing!" class="form-control">
-                   <span class="input-group-btn">
-                        <input type="submit" class="btn btn-default" id='issue-socket' value="Submit" />
-                   </span>
-                </div>
-            </div>
-        </div>
-        <!-- /.row -->
-    </div>
-    <!-- /.container -->
-    <div class="container">
-        <div id="holder" class="alert alert-success" style="display: none; padding-top: 20px; margin-top:20px;">
-        </div>
-    </div>
 
 
     <div id="floating-panel">
@@ -118,26 +68,56 @@
       <button onclick="changeOpacity()">Change opacity</button>
     </div>
     <div id="map"></div>
-    <script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBW_4CFPF1EnAUoksk5Pwq1hex0cYLDqqk&libraries=visualization&callback=initMap">
 
       // This example requires the Visualization library. Include the libraries=visualization
       // parameter when you first load the API. For example:
       // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=visualization">
 
-      var map, heatmap;
 
       function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 13,
-          center: {lat: 37.775, lng: -122.434},
-          mapTypeId: 'satellite'
+        $.ajax({
+             type: "GET",
+             url: "/crime"
+         }).complete(function(o) {
+            j = o.responseText;
+            console.log(j);
+            vals = JSON.parse(j);
+            console.log(vals);
+
+            const coords = vals;
+
+            var map, heatmap;
+
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 16,
+                center: {lat: 37.8741363, lng: -122.2571693},
+                mapTypeId: 'satellite'
+            });
+
+            heatmap = new google.maps.visualization.HeatmapLayer({
+                data: getPoints(),
+                map: map
+            });
+
+            function getPoints() {
+                // Define the LatLng coordinates for the polygon's path.
+                    let triangleCoords = [];
+                    for (let i = 0; i < coords.length; i++) {
+
+                        triangleCoords.push(new google.maps.LatLng(coords[i][0], coords[i][1]));
+                    }
+                    return triangleCoords;
+                }
+
+
         });
 
-        heatmap = new google.maps.visualization.HeatmapLayer({
-          data: getPoints(),
-          map: map
-        });
+
+
       }
+
+
 
       function toggleHeatmap() {
         heatmap.setMap(heatmap.getMap() ? null : map);
@@ -171,67 +151,23 @@
         heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
       }
 
-const coords = [
-    [37.8721979, -122.2605057],
-     [37.8718594, -122.2605249],
-     [37.8726036, -122.259647],
-     [37.8711402, -122.2601114],
-     [37.8713505, -122.2601721],
-     [37.8705807, -122.2603026],
-     [37.8708302, -122.260201],
-     [37.8709062, -122.2601618],
-     [37.8712284, -122.2609413],
-     [37.8737181, -122.2581945],
-     [37.8732513, -122.26214],
-     [37.8736827, -122.2612779],
-     [37.8741363, -122.2571693],
-     [37.8732666, -122.2635647],
-     [37.8729294, -122.2632761],
-     [37.8729222, -122.2549248],
-     [37.8727087, -122.2550863],
-     [37.8727389, -122.2549168],
-     [37.8711313, -122.2578865],
-     [37.8708894, -122.2578789],
-     [37.8726054, -122.2640646],
-     [37.8728158, -122.2642597],
-     [37.8717019, -122.254655],
-     [37.8713396, -122.2584278],
-     [37.8699361, -122.2589826],
-     [37.8695679, -122.2589231],
-     [37.8738109, -122.256509],
-     [37.871071, -122.2577062],
-     [37.8716652, -122.2613126],
-     [37.8719572, -122.2618367],
-     [37.8717534, -122.2627399],
-     [37.8718391, -122.2622702],
-     [37.8729841, -122.2630538],
-     [37.8731444, -122.2624745],
-     [37.8729699, -122.2627321],
-     [37.8715194, -122.2595031],
-     [37.8709293, -122.2544609],
-     [37.8706597, -122.2547746],
-     [37.8709293, -122.2544609],
-     [37.8709293, -122.2544609]
-];
 
 
 
-    function getPoints() {
-    // Define the LatLng coordinates for the polygon's path.
-        let triangleCoords = [];
-        for (let i = 0; i < coords.length; i++) {
-            console.log(coords[i][0], coords[i][1]);
-            triangleCoords.push(new google.maps.LatLng(coords[i][0], coords[i][1]));
-        }
-        console.log(triangleCoords);
-        return triangleCoords;
-    }
+
+
+    });
+
+
+
 
 
 
     </script>
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBW_4CFPF1EnAUoksk5Pwq1hex0cYLDqqk&libraries=visualization&callback=initMap">
-    </script>
+
+
+
+
+
   </body>
 </html>
