@@ -38,6 +38,22 @@ class CrimeHandler(BaseHandler):
         self.write(json.dumps(combined))
 
 
+class BestRouteHandler(BaseHandler):
+    def post(self):
+        addr1 = self.get_argument("addr1")
+        addr2 = self.get_argument("addr2")
+
+        routes = get_routes(addr1, addr2)
+
+        self.write({
+            "response": compute_best_route(routes),
+            "success": 1,
+        })
+
+
+
+
+
 def compute_centroids(coords):
     # Coords has to be an np.array object
     kmeans = KMeans(n_clusters = 10).fit(coords)
@@ -96,6 +112,7 @@ def make_app():
         (r"/",MainHandler),
         (r"/trial", TrialHandler),
         (r"/crime", CrimeHandler),
+        (r"/bestRoute", BestRouteHandler),
     ], debug=True,compress_response=True, **settings)
 
 

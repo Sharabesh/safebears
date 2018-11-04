@@ -17,7 +17,6 @@ def get_routes(source, destination, mode="walking", departure=datetime.now()):
     :param departure_time: time of departure
     :return: dictionary containing all points traversed by each route
     """
-
     directions_result = gmaps.directions(source, destination, mode, departure_time=departure, alternatives=True)
     return get_point_lists(directions_result)
 
